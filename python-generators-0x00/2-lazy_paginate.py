@@ -4,7 +4,7 @@ def paginate_users(page_size, offset):
     conn = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='your_password',  
+        password='your_password',
         database='ALX_prodev'
     )
     cursor = conn.cursor(dictionary=True)
@@ -21,11 +21,11 @@ def paginate_users(page_size, offset):
 
 def lazy_paginate(page_size):
     offset = 0
-    while True:  
+    while True:
         page = paginate_users(page_size, offset)
         if not page:
             break
         for row in page:
             yield row
         offset += page_size
-    return  
+    return 
