@@ -5,10 +5,10 @@ def stream_users():
     conn = mysql.connector.connect(
         host='localhost',
         user='root',
-        password='your_password',  # Replace with your MySQL password
+        password='your_password',
         database='ALX_prodev'
     )
-    cursor = conn.cursor(dictionary=True)  # Use dictionary=True for column names
+    cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT * FROM user_data")
 
