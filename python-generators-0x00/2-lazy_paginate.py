@@ -1,28 +1,31 @@
 import mysql.connector
 
-def fetch_limited_users(limit_count):
-    try:
-        # Connect to the MySQL database
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='your_password', 
-            database='ALX_prodev'
-        )
-        cursor = conn.cursor(dictionary=True)
+def paginate_users(page_size, offset):
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='root',
+        password='your_password', 
+        database='ALX_prodev'
+    )
+    cursor = conn.cursor(dictionary=True)
 
-        # Execute SELECT with LIMIT
-        query = "SELECT * FROM user_data ORDER BY user_id LIMIT %s"
-        cursor.execute(query, (limit_count,))
+    # Explicitly using LIMIT and OFFSET in SQL as required
+    query = "SELECT * FROM user_data LIMIT %s OFFSET %s"
+    cursor.execute(query, (page_size, offset))
+    rows = cursor.fetchall()
 
-        # Fetch and return results
-        results = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
 
-        cursor.close()
-        conn.close()
-
-        return results
-
-    except mysql.connector.Error as err:
-        print(f"Database error: {err}")
-        return []
+def lazy_paginate(page_size):
+    offset = 0
+    while True:  # One loop only
+        # Required: call to paginate_users(page_size, offset)
+        page = paginate_users(page_size, offset)
+        if not page:
+            break
+        for row in page:
+            yield row
+        offset += page_size
+    return  # Explicit return after generator completes
